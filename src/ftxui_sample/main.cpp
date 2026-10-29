@@ -272,7 +272,7 @@ void game_iteration_canvas()
       small_bm_pixel.B += 11;// NOLINT Magic Number
       break;
     default:// literally impossible
-      std::unreachable();
+      __builtin_unreachable();
     }
 
 

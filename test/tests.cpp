@@ -4,7 +4,7 @@
 #include <myproject/sample_library.hpp>
 
 
-TEST_CASE("Factorials are computed", "[factorial]")
+TEST_CASE("Factorials are computed", "[factorial]")// NOLINT(cert-err58-cpp)
 {
   REQUIRE(factorial(0) == 1);
   REQUIRE(factorial(1) == 1);
