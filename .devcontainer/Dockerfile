@@ -11,7 +11,8 @@ RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
         software-properties-common wget apt-utils file zip \
         openssh-client gpg-agent socat rsync \
         make ninja-build git \
-        python3 python3-pip
+        python3 python3-pip \
+        curl
 
 # User-settable versions:
 # This Dockerfile should support gcc-[7, 8, 9, 10, 11] and clang-[10, 11, 12, 13]
@@ -74,7 +75,7 @@ RUN mkdir -p ${IWYU_BUILD} && \
         ${IWYU_SRC}
 RUN CC=clang-${LLVM_VER} CXX=clang++-${LLVM_VER} cmake -S ${IWYU_SRC} \
         -B ${IWYU_BUILD} \
-        -G "Unix Makefiles" -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${LLVM_VER} && \
+        -G "Unix Makefiles" -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${LLVM_VER} -DCMAKE_POLICY_VERSION_MINIMUM=3.5 && \
     cmake --build ${IWYU_BUILD} -j && \
     cmake --install ${IWYU_BUILD}
 
@@ -85,6 +86,9 @@ RUN CC=clang-${LLVM_VER} CXX=clang++-${LLVM_VER} cmake -S ${IWYU_SRC} \
 RUN mkdir -p $(include-what-you-use -print-resource-dir 2>/dev/null)
 RUN ln -s $(readlink -f /usr/lib/clang/${LLVM_VER}/include) \
     $(include-what-you-use -print-resource-dir 2>/dev/null)/include
+
+# Install OpenCode
+RUN curl -fsSL https://opencode.ai/v2/install | bash
 
 ## Cleanup cached apt data we don't need anymore
 RUN apt-get autoremove -y && apt-get clean && \
